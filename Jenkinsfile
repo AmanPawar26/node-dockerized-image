@@ -1,39 +1,42 @@
 pipeline {
     agent any
-    stages{
-        stage("checkout"){
-            steps{
+
+    stages {
+        stage("checkout") {
+            steps {
                 checkout scm
             }
         }
 
-        stage("Test"){
-            steps{
+        stage("Test") {
+            steps {
                 bat 'npm install'
                 bat 'npm test'
             }
         }
 
-        stage("Build"){
-            steps{
+        stage("Build") {
+            steps {
                 bat 'npm run build'
             }
         }
-        stage("Build Image"){
-            steps{
+
+        stage("Build Image") {
+            steps {
                 bat 'docker build -t my-node-app:1.0 .'
             }
         }
-        stage('Docker Push') {
-   stage('Docker Push') {
-    steps {
-        withCredentials([usernamePassword(credentialsId: 'docker_cred', passwordVariable: 'DOCKERHUB_PASSWORD', usernameVariable: 'DOCKERHUB_USERNAME')]) {
-            bat 'docker login -u %DOCKERHUB_USERNAME% -p %DOCKERHUB_PASSWORD%'
-            bat 'docker tag my-node-app:1.0 pawaramanraju/my-node-app:1.0'
-            bat 'docker push pawaramanraju/my-node-app:1.0'
-            bat 'docker logout'
-           }
+
+        stage("Docker Push") {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker_cred', passwordVariable: 'DOCKERHUB_PASSWORD', usernameVariable: 'DOCKERHUB_USERNAME')]) {
+                    bat 'docker login -u %DOCKERHUB_USERNAME% -p %DOCKERHUB_PASSWORD%'
+                    bat 'docker tag my-node-app:1.0 pawaramanraju/my-node-app:1.0'
+                    bat 'docker push pawaramanraju/my-node-app:1.0'
+                    bat 'docker logout'
+                }
+            }
         }
-      }
     }
 }
+
