@@ -1,5 +1,10 @@
-FROM node:latest
+FROM node:20-alpine
+
 WORKDIR /apps
-ADD . .
+
+COPY package*.json ./
 RUN npm install
+
+COPY . .
+
 CMD ["node", "index.js"]
